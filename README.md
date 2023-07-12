@@ -1,0 +1,2 @@
+# AI_StackChan2_ver_KEI_feat_BlueArchive
+Blue Archive KEI型スタックチャン
