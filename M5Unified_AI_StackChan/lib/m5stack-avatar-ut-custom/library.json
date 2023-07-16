@@ -1,0 +1,23 @@
+{
+  "name": "M5Stack-Avatar-ut-custom",
+  "keywords": "avatar, lcd, cute, face, M5Stack",
+  "description": "An M5Stack library for rendering avatar faces",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/u-tanick/m5stack-avatar-ut-custom.git"
+  },
+  "authors": [
+    {
+      "name": "Ko Umetani",
+      "email": "",
+      "url": "",
+      "maintainer": true
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+  },
+  "version": "0.1.0",
+  "frameworks": "arduino",
+  "platforms": "espressif32"
+}
