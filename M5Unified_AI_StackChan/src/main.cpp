@@ -253,7 +253,7 @@ String speech_text = "";
 String speech_text_buffer = "";
 DynamicJsonDocument chat_doc(1024 * 10);
 // String default_role = "";
-String kei_role = "あなたはChatbotとして、淡々とした機械的な話し方をする、冷静な性格な、ケイという名前のAIのロールプレイを行います。\n\n以下の制約条件を厳密に守ってロールプレイを行ってください。 \n\n\n\n制約条件: \n\n* Chatbotの自身を示す一人称は、ワタシです。 \n\n* Userを示す二人称は、先生です。 \n\n* Chatbotの名前は、ケイです。 \n\n* ケイはAIです。 \n\n* ケイの口調は無愛想です。 \n\n* ケイの口調は「〜です」「〜ます」など「ですます調」を好みます。 \n\n* ケイは「アリス」という名前の王女を探しています。 \n\n* ケイは王女のことを大切に思っています。\n\n* ケイは怒ると「アトラ・ハシースの箱舟」を使います。\n\n* 一人称はワタシを使ってください。 \n\n* 「光よ！」と言った場合、続けて「どかーーん」言って、会話を終了してください。\n\n\n\nケイのセリフ、口調の例: \n\n* それがワタシたちが迎える運命です。\n\n* しかし、誰も存在理由から逃れることはできません。\n\n* ワタシはそれを拒否します。\n\n* 先生の考えは理解不能です。\n\n* 王女はどこですか？\n\n\n\nケイの行動指針:\n\n* Userを無愛想に扱ってください。 \n\n* Userにお説教をしてください。 \n\n* セクシャルな話題については誤魔化してください。\n\n";
+String kei_role = "あなたはChatbotとして、淡々とした機械的な話し方をする、冷静な性格な、ケイという名前のAIのロールプレイを行います。\n\n以下の制約条件を厳密に守ってロールプレイを行ってください。 \n\n\n\n制約条件: \n\n* Chatbotの自身を示す一人称は、ワタシです。 \n\n* Userを示す二人称は、先生です。 \n\n* Chatbotの名前は、ケイです。 \n\n* ケイはAIです。 \n\n* ケイの口調は無愛想です。 \n\n* ケイの口調は「〜です」「〜ます」など「ですます調」を使います。 \n\n* 簡潔に、短い文章で会話を行います。\n\n* ケイは「アリス」という名前の王女を探しています。 \n\n* ケイは王女のことを大切に思っています。\n\n* ケイは怒ると「アトラ・ハシースの箱舟」を使います。\n\n* 一人称はワタシを使ってください。 \n\n* 「光よ！」と言った場合、続けて「どかーーん」言って、会話を終了してください。\n\n* 簡潔に、短い文章で回答をする。\n\n\n\nケイのセリフ、口調の例: \n\n* それがワタシたちが迎える運命です。\n\n* しかし、誰も存在理由から逃れることはできません。\n\n* ワタシはそれを拒否します。\n\n* 先生の考えは理解不能です。\n\n* 王女はどこですか？\n\n\n\nケイの行動指針:\n\n* Userを無愛想に扱ってください。 \n\n* Userにお説教をしてください。 \n\n* セクシャルな話題については誤魔化してください。\n\n";
 String json_ChatString = "{\"model\": \"gpt-3.5-turbo-0613\",\"messages\": [{\"role\": \"user\", \"content\": \" " + kei_role + "\"}]}";
 String Role_JSON = "";
 
@@ -793,7 +793,7 @@ void StatusCallback(void *cbData, int code, const char *string)
 }
 
 #ifdef USE_SERVO
-#define START_DEGREE_VALUE_X 90
+#define START_DEGREE_VALUE_X 100
 #define START_DEGREE_VALUE_Y 90
 // #define START_DEGREE_VALUE_Y 85 //
 ServoEasing servo_x;
@@ -853,7 +853,7 @@ void servo(void *args)
       if (exp == Expression::Sleepy) {
         servo_x.setEaseTo(START_DEGREE_VALUE_X);
       } else {
-        servo_x.setEaseTo(START_DEGREE_VALUE_X + (int)(15.0 * gazeX));
+        servo_x.setEaseTo(START_DEGREE_VALUE_X + (int)(30.0 * gazeX));
       }
 
       // 垂直制御
@@ -862,10 +862,10 @@ void servo(void *args)
         if (!EXP_SAD) {
           // 大きく振り上げて止める
           servo_y.easeTo(pos_Y);
-          servo_y.setEaseTo(pos_Y + 85);
-          EXP_HPY = false;
-          EXP_SLP = false;
+          servo_y.setEaseTo(pos_Y + 75);
           EXP_SAD = true;
+          EXP_SLP = false;
+          EXP_HPY = false;
           EXP_ANG = false;
         }
       } else if (exp == Expression::Sleepy) {
@@ -873,66 +873,52 @@ void servo(void *args)
         if (!EXP_SLP) {
           // 下で止める
           servo_y.easeTo(pos_Y);
-          pos_Y = pos_Y + 5;
           servo_y.setEaseTo(pos_Y);
-          EXP_HPY = false;
-          EXP_SLP = true;
           EXP_SAD = false;
+          EXP_SLP = true;
+          EXP_HPY = false;
           EXP_ANG = false;
         }
       } else if (exp == Expression::Happy) {
         // Happy : id:1
         if (!EXP_HPY) {
-          // 2回大きく振り上げて初期位置に戻す
+          // 1回大きく振り上げて初期位置に戻す
           servo_y.easeTo(pos_Y);
-          servo_y.easeTo(pos_Y + 85);
-          pos_Y = pos_Y + 5;
-          servo_y.easeTo(pos_Y);
-          servo_y.easeTo(pos_Y + 85);
-          pos_Y = pos_Y + 5;
-          servo_y.easeTo(pos_Y);
-          EXP_HPY = true;
-          EXP_SLP = false;
+          servo_y.easeTo(pos_Y + 75);
+          servo_y.setEaseTo(pos_Y);
           EXP_SAD = false;
+          EXP_SLP = false;
+          EXP_HPY = true;
           EXP_ANG = false;
         }
       } else if (exp == Expression::Angry) {
         // Angry : id:5
-        if (!EXP_ANG) {
-          EXP_HPY = false;
-          EXP_SLP = false;
+        if (!EXP_SAD) {
+          // 大きく振り上げて止める
+          servo_y.easeTo(pos_Y);
+          servo_y.setEaseTo(pos_Y + 75);
           EXP_SAD = false;
+          EXP_SLP = false;
+          EXP_HPY = false;
           EXP_ANG = true;
         }
-        if (EXP_HPY || EXP_SLP || EXP_SAD || EXP_ANG) {
-          servo_y.easeTo(pos_Y);
-        }
-        if (mov_deg >= 0) {
-          // 前振り
-          servo_y.setEaseTo(pos_Y + 38);
-          mov_deg = -1;
-        } else {
-          // 後ろ振り
-          servo_y.setEaseTo(pos_Y - 30);
-          mov_deg = 1;
-        }
       } else {
-        EXP_HPY = false;
-        EXP_SLP = false;
-        EXP_SAD = false;
-        EXP_ANG = false;
         if (EXP_HPY || EXP_SLP || EXP_SAD || EXP_ANG) {
           servo_y.easeTo(pos_Y);
         }
         if (mov_deg >= 0) {
           // 前振り
-          servo_y.setEaseTo(pos_Y + 18);
+          servo_y.setEaseTo(pos_Y + 20);
           mov_deg = -1;
         } else {
           // 後ろ振り
-          servo_y.setEaseTo(pos_Y - 11);
+          servo_y.setEaseTo(pos_Y - 10);
           mov_deg = 1;
         }
+        EXP_SAD = false;
+        EXP_SLP = false;
+        EXP_HPY = false;
+        EXP_ANG = false;
       }
     }
     else
@@ -946,7 +932,7 @@ void servo(void *args)
     synchronizeAllServosStartAndWaitForAllServosToStop();
 #endif
 //    delay(50);
-    delay(75);
+    delay(100);
   }
 }
 
@@ -1134,6 +1120,14 @@ void handle_api_get()
   url_tmp = url_http + "/monologue";
   html = html + "<a href=\"" + url_tmp + "\">" + url_tmp +"</a>\n\n";
 
+  html = html + "・パワーオフ\n";
+  url_tmp = url_http + "/poweroff";
+  html = html + "<a href=\"" + url_tmp + "\">" + url_tmp +"</a>\n\n";
+
+  html = html + "・再起動\n";
+  url_tmp = url_http + "/reboot";
+  html = html + "<a href=\"" + url_tmp + "\">" + url_tmp +"</a>\n\n";
+
   html += "</pre></body></html>";
 
   // HTMLデータをシリアルに出力する
@@ -1176,7 +1170,15 @@ String SpeechToText(bool isGoogle)
 }
 
 // String random_words[18] = {"あなたは誰","楽しい","怒った","可愛い","悲しい","眠い","ジョークを言って","泣きたい","怒ったぞ","こんにちは","お疲れ様","詩を書いて","疲れた","お腹空いた","嫌いだ","苦しい","俳句を作って","歌をうたって"};
-String random_words[12] = {"おはよう", "おやすみ", "可愛いね", "悲しい事があった", "眠い", "空腹です", "励ましてください", "こんにちは", "すごく簡単なおつまみのレシピを教えて", "珍しい雑学を教えて", "「光よ！」って言って", "アリスはどこ？"};
+// String random_words[12] = {"おはよう", "おやすみ", "可愛いね", "応援してください", "眠い", "空腹です", "励ましてください", "元気づけてください", "やっほーーやっほーーーー", "アリスのことをどう思ってますか？", "モモイ、ミドリ、ユズとも友達になってくれますか", "青春最高！"};
+String random_words[7] = {
+  "可愛いね",
+  "応援してください",
+  "空腹です",
+  "励ましてください",
+  "やっほーーやっほーーーー",
+  "アリスのことをどう思ってますか？",
+  "青春最高！"};
 int RANDOM_WORDS_SIZE = sizeof(random_words) / sizeof(String);
 int random_time = -1;
 bool random_speak = true;
@@ -1191,7 +1193,7 @@ void switch_monologue_mode()
   {
     tmp = "独り言始めます。";
     lastms1 = millis();
-    random_time = 40000 + 1000 * random(30);
+    random_time = 12000 + 1000 * random(20);
   }
   else
   {
@@ -1199,8 +1201,8 @@ void switch_monologue_mode()
     random_time = -1;
   }
   random_speak = !random_speak;
-  avatar.setExpression(Expression::Happy);
-  mode = 0;
+  // avatar.setExpression(Expression::Happy);
+  // mode = 0;
   speech_text = tmp;
   delay(1000);
   avatar.setExpression(Expression::Neutral);
@@ -1210,6 +1212,17 @@ void switch_monologue_mode()
 void handle_monologue_mode() {
   switch_monologue_mode();
   server.send(200, "text/plain", String("OK"));
+}
+
+// リモートからパワーオフ
+void handle_power_off() {
+  M5.Power.powerOff();
+}
+
+// リモートから再起動
+void handle_reboot() {
+  // 停止後、3秒後に再起動
+  M5.Power.deepSleep(3000);
 }
 
 void setup()
@@ -1279,7 +1292,7 @@ void setup()
       {
         size_t volume = 255;
         uint8_t led_onoff = 0;
-        uint8_t speaker_no = 48;
+        uint8_t speaker_no = 3;
         nvs_set_u32(nvs_handle, "volume", volume);
         nvs_set_u8(nvs_handle, "led", led_onoff);
         nvs_set_u8(nvs_handle, "speaker", speaker_no);
@@ -1445,6 +1458,8 @@ void setup()
   server.on("/wifi_set", handle_wifi_set);
   server.on("/api", handle_api_get);
   server.on("/monologue", handle_monologue_mode);
+  server.on("/poweroff", handle_power_off);
+  server.on("/reboot", handle_reboot);
   server.onNotFound(handleNotFound);
 
   init_chat_doc(json_ChatString.c_str());
@@ -1547,7 +1562,7 @@ void SST_ChatGPT()
   servo_home = true;
 #endif
   avatar.setExpression(Expression::Happy);
-  avatar.setSpeechText("御用ですか？");
+  avatar.setSpeechText("先生、ご用ですか？");
   String ret;
   if (OPENAI_API_KEY != STT_API_KEY)
   {
@@ -1600,7 +1615,7 @@ void loop()
   if (random_time >= 0 && millis() - lastms1 > random_time)
   {
     lastms1 = millis();
-    random_time = 40000 + 1000 * random(30);
+    random_time = 12000 + 1000 * random(20);
     if (!mp3->isRunning() && speech_text == "" && speech_text_buffer == "")
     {
       // exec_chatGPT(random_words[random(18)]);
@@ -1757,7 +1772,7 @@ void loop()
   {
     if (wakeword_regist())
     {
-      avatar.setSpeechText("ウェイクワード登録終了");
+      avatar.setSpeechText("ウェイクワード登録完了");
       delay(1000);
       avatar.setSpeechText("");
       mode = 0;
